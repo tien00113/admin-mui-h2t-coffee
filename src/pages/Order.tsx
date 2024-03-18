@@ -43,7 +43,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
-const Calendar = () => {
+const Order = () => {
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Đơn hàng" />
@@ -64,4 +64,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar;
+export default Order;

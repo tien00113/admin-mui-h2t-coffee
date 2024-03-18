@@ -7,8 +7,8 @@ import DefaultLayout from '../../layout/DefaultLayout';
 
 const SignUp: React.FC = () => {
   return (
-    <DefaultLayout>
-      <Breadcrumb pageName="Sign Up" />
+    // <DefaultLayout>
+    //   <Breadcrumb pageName="Sign Up" />
 
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
@@ -340,7 +340,7 @@ const SignUp: React.FC = () => {
                 <div className="mt-6 text-center">
                   <p>
                     Already have an account?{' '}
-                    <Link to="/auth/signin" className="text-primary">
+                    <Link to="/dang-nhap" className="text-primary">
                       Sign in
                     </Link>
                   </p>
@@ -350,7 +350,7 @@ const SignUp: React.FC = () => {
           </div>
         </div>
       </div>
-    </DefaultLayout>
+    // </DefaultLayout>
   );
 };
 
