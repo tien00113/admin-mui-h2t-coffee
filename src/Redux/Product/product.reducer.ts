@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getAllProductAction } from "./product.action";
+import { createProductAction, getAllProductAction } from "./product.action";
 interface Product{
     error: string | null,
     loading: boolean,
@@ -28,6 +28,21 @@ const productSlice = createSlice({
             state.error = action.error.message || null;
             state.loading = false;
         });
+
+        //creat products
+
+        builder.addCase(createProductAction.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        });
+        builder.addCase(createProductAction.fulfilled, (state, action: PayloadAction<any>)=>{
+            state.product = action.payload;
+            state.loading = false;
+        });
+        builder.addCase(createProductAction.rejected, (state, action)=>{
+            state.error = action.error.message || null;
+            state.loading = false;
+        })
     },
 });
 

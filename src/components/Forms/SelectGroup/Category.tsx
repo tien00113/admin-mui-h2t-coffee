@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
-const SelectGroupOne: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState<string>('');
+const Category
+: React.FC<{ onCategoryChange: (category: { name: string; id: any }) => void }> = ({onCategoryChange}) => {
+  const [selectedOption, setSelectedOption] = useState<{ name: string; id: any } | null>(null);
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
 
   const changeTextColor = () => {
@@ -9,35 +10,37 @@ const SelectGroupOne: React.FC = () => {
   };
 
   return (
-    <div className="mb-4.5">
-      <label className="mb-2.5 block text-black dark:text-white">
+    <div>
+      <label className="mb-2.5 font-medium block text-black dark:text-white">
         {' '}
-        Subject{' '}
+        Phân loại{' '}
       </label>
 
-      <div className="relative z-20 bg-transparent dark:bg-form-input">
+      <div className="relative z-30 bg-transparent dark:bg-form-input">
         <select
-          value={selectedOption}
+          value={selectedOption ? JSON.stringify(selectedOption) : ''}
           onChange={(e) => {
-            setSelectedOption(e.target.value);
+            const selectedCategory = JSON.parse(e.target.value);
+            setSelectedOption(selectedCategory);
+            onCategoryChange(selectedCategory)
             changeTextColor();
           }}
-          className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
+          className={`relative z-40 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${
             isOptionSelected ? 'text-black dark:text-white' : ''
           }`}
         >
           <option value="" disabled className="text-body dark:text-bodydark">
-            Select your subject
+            Chọn phân loại
           </option>
-          <option value="USA" className="text-body dark:text-bodydark">
-            USA
+          <option value='{"id": 1}' className="text-body dark:text-bodydark">
+            Đồ ăn
           </option>
-          <option value="UK" className="text-body dark:text-bodydark">
-            UK
+          {/* <option value="UK" className="text-body dark:text-bodydark">
+            Đồ ăn nhanh
           </option>
           <option value="Canada" className="text-body dark:text-bodydark">
-            Canada
-          </option>
+            Thêm phân loại
+          </option> */}
         </select>
 
         <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
@@ -64,4 +67,4 @@ const SelectGroupOne: React.FC = () => {
   );
 };
 
-export default SelectGroupOne;
+export default Category;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import AddIcon from '@mui/icons-material/Add';
 
 interface Option {
   value: string;
@@ -11,12 +12,13 @@ interface DropdownProps {
   id: string;
 }
 
-const MultiSelect: React.FC<DropdownProps> = ({ id }) => {
+const SizeOption: React.FC<DropdownProps> = ({ id }) => {
   const [options, setOptions] = useState<Option[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [show, setShow] = useState(false);
   const dropdownRef = useRef<any>(null);
   const trigger = useRef<any>(null);
+  const [isOpenSize, setIsOpenSize] = useState(false);
 
   useEffect(() => {
     const loadOptions = () => {
@@ -93,19 +95,45 @@ const MultiSelect: React.FC<DropdownProps> = ({ id }) => {
     return () => document.removeEventListener('click', clickHandler);
   });
 
-  return (
-    <div className="relative z-40">
-      <div>
-        <select className="hidden" id={id}>
-          <option value="4">Dừa Khô</option>
-          <option value="1">Thạch</option>
-          <option value="2">Trân trâu</option>
-          <option value="3">Pupping</option>
-        </select>
+  const listopt = [
+    { name: 'S', price: 5000 },
+    { name: 'M', price: 7000 },
+    { name: 'L', price: 10000 },
+  ];
 
+  return (
+    <div className="relative z-50">
+      {/* <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+        Sỉze
+      </label> */}
+      <div>
+        {/* <select className="hidden" id={id}>
+          {listopt.map((option, index) => (
+            <option key={index} value={index}>
+              <div className='grid grid-cols-2'>
+                <div>{option.name}</div>
+                <div>{option.price}</div>
+              </div>
+            </option>
+          ))}
+        </select> */}
+        {isOpenSize && (
+          <div className="mt-4">
+            <input
+              className="w-full px-3 py-2 mb-3 text-gray-700 border rounded focus:outline-none focus:shadow-outline"
+              type="text"
+              placeholder="Nhập tên"
+            />
+            <input
+              className="w-full px-3 py-2 text-gray-700 border rounded focus:outline-none focus:shadow-outline"
+              type="text"
+              placeholder="Nhập giá"
+            />
+          </div>
+        )}
         <div className="flex flex-col items-center">
           <input name="values" type="hidden" defaultValue={selectedValues()} />
-          <div className="relative z-40 inline-block w-full">
+          <div className="relative z-50 inline-block w-full">
             <div className="relative flex flex-col items-center">
               <div ref={trigger} onClick={open} className="w-full">
                 <div className="mb-2 flex rounded border border-stroke py-2 p-2 pr-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input">
@@ -146,7 +174,7 @@ const MultiSelect: React.FC<DropdownProps> = ({ id }) => {
                     {selected.length === 0 && (
                       <div className="flex-1">
                         <input
-                          placeholder="Topping"
+                          placeholder="Size"
                           className="h-full w-full appearance-none bg-transparent p-1 px-2 outline-none"
                           defaultValue={selectedValues()}
                         />
@@ -160,6 +188,7 @@ const MultiSelect: React.FC<DropdownProps> = ({ id }) => {
                       className="h-6 w-6 cursor-pointer outline-none focus:outline-none"
                     >
                       <svg
+                        className={`${show && 'rotate-180'}`}
                         width="24"
                         height="24"
                         viewBox="0 0 24 24"
@@ -180,18 +209,31 @@ const MultiSelect: React.FC<DropdownProps> = ({ id }) => {
                 </div>
               </div>
               <div className="w-full px-4">
-                <div
-                  className={`max-h-select absolute top-full left-0 z-40 w-full overflow-y-auto rounded bg-white shadow dark:bg-form-input ${isOpen() ? '' : 'hidden'
-                    }`}
+                <div className={`max-h-select absolute top-full left-0 z-40 w-full overflow-y-auto rounded bg-white shadow dark:bg-form-input ${isOpen() ? '' : 'hidden'
+                  }`}
                   ref={dropdownRef}
                   onFocus={() => setShow(true)}
                   onBlur={() => setShow(false)}
                 >
                   <div className="flex w-full flex-col">
-                    <div>
-                      <input className='p-5' type="text" placeholder='Tên'/>
-                      <input className='p-5' type="text" placeholder='Giá' />
-                    </div>
+                    {options.map((option, index) => (
+                      <div key={index}>
+                        <div
+                          className="w-full cursor-pointer rounded-t border-b border-stroke hover:bg-primary/5 dark:border-form-strokedark"
+                          onClick={(event) => select(index, event)}
+                        >
+                          <div className={`relative flex w-full items-center border-l-2 border-transparent p-2 pl-2 ${option.selected ? 'border-primary' : ''
+                            }`}
+                          >
+                            <div className="flex w-full items-center">
+                              <div className="mx-2 leading-6">
+                                {option.text}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -199,8 +241,8 @@ const MultiSelect: React.FC<DropdownProps> = ({ id }) => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div >
+  )
 };
 
-export default MultiSelect;
+export default SizeOption;

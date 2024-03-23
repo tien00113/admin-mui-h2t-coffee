@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
+import SelectGroupOne from '../../components/Forms/SelectGroup/Category';
 import DefaultLayout from '../../layout/DefaultLayout';
 
 const FormLayout = () => {

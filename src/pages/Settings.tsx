@@ -4,9 +4,9 @@ import DefaultLayout from '../layout/DefaultLayout';
 
 const Settings = () => {
   return (
-    <DefaultLayout>
+    // <DefaultLayout>
       <div className="mx-auto max-w-270">
-        <Breadcrumb pageName="Settings" />
+        {/* <Breadcrumb pageName="Settings" /> */}
 
         <div className="grid grid-cols-5 gap-8">
           <div className="col-span-5 xl:col-span-3">
@@ -305,7 +305,7 @@ const Settings = () => {
           </div>
         </div>
       </div>
-    </DefaultLayout>
+    // </DefaultLayout>
   );
 };
 

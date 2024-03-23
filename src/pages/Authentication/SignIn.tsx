@@ -24,7 +24,7 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const handleSubmitLogin = async(values:LoginData) =>{
-    console.log("adminlogin------",admin)
+    console.log("adminlogin------",values)
     try {
       const results = await dispatch(loginAction(values));
       unwrapResult(results);

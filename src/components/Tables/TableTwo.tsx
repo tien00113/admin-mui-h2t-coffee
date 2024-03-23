@@ -5,11 +5,15 @@ import FilterDropdown from '../Dropdowns/FilterDropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../Redux/store';
 import { getAllProductAction } from '../../Redux/Product/product.action';
+import { useEffect } from 'react';
 
 const TableTwo = () => {
   const productData = useSelector((state: RootState)=> state.product.product);
   const dispatch: AppDispatch = useDispatch();
-  dispatch(getAllProductAction());
+  
+  useEffect(()=>{
+    dispatch(getAllProductAction());
+  },[dispatch])
 
   console.log("tat ca san pham:::::::::", productData);
   return (
@@ -17,7 +21,7 @@ const TableTwo = () => {
       <div className="py-4 px-4 md:px-4 xl:px-4">
         <div className="flex flex-wrap gap-5 xl:gap-20 justify-between">
           <div>
-            <p><FilterDropdown /></p>
+            <FilterDropdown />
           </div>
           <Link
             to="/san-pham/them"
@@ -39,7 +43,7 @@ const TableTwo = () => {
           <p className="font-medium">Giá</p>
         </div>
         <div className="col-span-1 flex items-center">
-          <p className="font-medium">Kho</p>
+          <p className="font-medium">Giá thực</p>
         </div>
         <div className="col-span-1 flex items-center">
           <p className="font-medium">Lợi nhuận</p>
@@ -49,15 +53,15 @@ const TableTwo = () => {
         </div>
       </div>
 
-      {productData.map((item: any) => (
+      {productData && productData.map((item:any, index: number) => (
         <div
           className="grid grid-cols-7 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-9 md:px-6 2xl:px-7.5"
-          // key={key}
+          key={index}
         >
           <div className="col-span-3 flex items-center">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <div className="h-12.5 w-15 rounded-md">
-                <img src={item.image} alt="Product" />
+                <img src={item.image} alt="hihi" />
               </div>
               <p className="text-sm text-black dark:text-white">
                 {item.name}
@@ -71,11 +75,11 @@ const TableTwo = () => {
           </div>
           <div className="col-span-1 flex items-center">
             <p className="text-sm text-black dark:text-white">
-              ${item.price}
+              {item.price}
             </p>
           </div>
           <div className="col-span-1 flex items-center">
-            <p className="text-sm text-black dark:text-white">{item.sold}</p>
+            <p className="text-sm text-black dark:text-white">{item.salePrice}</p>
           </div>
           <div className="col-span-1 flex items-center">
             <p className="text-sm text-meta-3">${item.profit}</p>

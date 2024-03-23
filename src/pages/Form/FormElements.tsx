@@ -1,231 +1,246 @@
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import CheckboxFive from '../../components/Checkboxes/CheckboxFive';
-import CheckboxFour from '../../components/Checkboxes/CheckboxFour';
-import CheckboxOne from '../../components/Checkboxes/CheckboxOne';
-import CheckboxThree from '../../components/Checkboxes/CheckboxThree';
-import CheckboxTwo from '../../components/Checkboxes/CheckboxTwo';
-import SwitcherFour from '../../components/Switchers/SwitcherFour';
-import SwitcherOne from '../../components/Switchers/SwitcherOne';
-import SwitcherThree from '../../components/Switchers/SwitcherThree';
-import SwitcherTwo from '../../components/Switchers/SwitcherTwo';
 import DefaultLayout from '../../layout/DefaultLayout';
-import DatePickerOne from '../../components/Forms/DatePicker/DatePickerOne';
-import DatePickerTwo from '../../components/Forms/DatePicker/DatePickerTwo';
-import SelectGroupTwo from '../../components/Forms/SelectGroup/SelectGroupTwo';
-import MultiSelect from '../../components/Forms/MultiSelect';
+import { ChangeEvent, useState } from 'react';
+import Category from '../../components/Forms/SelectGroup/Category';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
+import { AppDispatch } from '../../Redux/store';
+import { useDispatch } from 'react-redux';
+import { createProductAction } from '../../Redux/Product/product.action';
+import SizeOptions from '../Product/SizeOptions';
+import ToppingOptions from '../Product/ToppingOptions';
+interface Size {
+  name: string;
+  price: number;
+}
+interface ToppingOption {
+  nameTopping: string;
+  priceTopping: number;
+}
+interface ProductImage {
+  imageUrl: string;
+}
+interface ProductData {
+  product: {
+    name: string;
+    price: number;
+    salePrice: number;
+    description: string;
+    category: {
+      id: any;
+    } | null;
+  };
+  sizeOptions: Size[];
+  toppingOptions: ToppingOption[];
+  productImages: ProductImage[];
+}
+
+const initialProductData: ProductData = {
+  product: {
+    name: '',
+    price: 0,
+    salePrice: 0,
+    description: '',
+    category: null,
+  },
+  sizeOptions: [],
+  toppingOptions: [],
+  productImages: [],
+};
 
 const FormElements = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const [selectedFiles, setSelectedFiles] = useState<string[]>(Array(4).fill(''));
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files!);
+    const newFiles = files.map(file => URL.createObjectURL(file));
+    setSelectedFiles(prevState => {
+      let updatedFiles = [...newFiles, ...prevState];
+      if (updatedFiles.length > 4) {
+        updatedFiles = updatedFiles.slice(0, 4);
+      }
+      return updatedFiles;
+    });
+  };
+
+  const handleAddProduct = async (values: ProductData, { setSubmitting }: FormikHelpers<ProductData>) => {
+    const data = {
+      ...values,
+      productImages: selectedFiles.filter(imageUrl => imageUrl !== '').map(imageUrl => ({ imageUrl })),
+    }
+    setSubmitting(false);
+
+    await dispatch(createProductAction(data));
+  };
+
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Form Elements" />
-
-      <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
-        <div className="flex flex-col gap-9">
-          {/* <!-- Input Fields --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Thông tin sản phẩm
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Tên sản phẩm
-                </label>
-                <input
-                  type="text"
-                  placeholder="Tên sản phẩm"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
+      <Breadcrumb pageName="Thêm sản phẩm" />
+      <div className="mx-auto max-w-270">
+        <div className="grid grid-cols-3 gap-8">
+          <div className="col-span-5 xl:col-span-3">
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark bg-slate-500">
+                <h3 className="font-medium text-white dark:text-white text-center">
+                  THÔNG TIN SẢN PHẨM
+                </h3>
               </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Mô tả
-                </label>
-                <textarea
-                  rows={6}
-                  placeholder="Mô tả sản phẩm"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                ></textarea>
-              </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Giá gốc
-                </label>
-                <input
-                  type="number"
-                  placeholder="Giá"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Giá sale
-                </label>
-                <input
-                  type="number"
-                  placeholder="Giá sale"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
+              <div className="p-6">
+                <Formik initialValues={initialProductData} onSubmit={handleAddProduct}>
+                  {({ setFieldValue }) => (<Form>
+                    <section>
+                      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                        <div className="flex flex-col gap-5.5 p-3.5">
+                          <div className="">
+                            <label
+                              className="mb-3 block font-medium text-black dark:text-white"
+                            >
+                              Tên sản phẩm
+                            </label>
+                            <Field
+                              className="w-full rounded border border-stroke py-2 px-3.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                              style={{ backgroundColor: 'transparent' }}
+                              type="text"
+                              name="product.name"
+                              id="product.name"
+                              placeholder="Nhập tên ..."
+                            />
+                          </div>
+                          <div className="flex flex-col gap-5.5 sm:flex-row">
+                            <div className="w-full">
+                              <label
+                                className="mb-3 block font-medium text-black dark:text-white"
+                              >
+                                Giá gốc
+                              </label>
+                              <div className="relative">
+                                <Field
+                                  className="w-full rounded border border-stroke py-2 pl-3.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                                  type="number"
+                                  name="product.price"
+                                  id="product.price"
+                                />
+                              </div>
+                            </div>
 
-              {/* <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Active Input
-                </label>
-                <input
-                  type="text"
-                  placeholder="Active Input"
-                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                />
-              </div> */}
+                            <div className="w-full">
+                              <label
+                                className="mb-3 block font-medium text-black dark:text-white"
+                              >
+                                Giá sale
+                              </label>
+                              <Field
+                                className="w-full rounded border border-stroke py-2 px-3.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                                type="number"
+                                name="product.salePrice"
+                                id="product.salePrice"
+                              />
+                            </div>
+                          </div>
+                          <Category onCategoryChange={(category) => {
+                            setFieldValue("product.category", category);
+                          }} />
+                          <div className="">
+                            <label
+                              className="mb-3 block font-medium text-black dark:text-white"
+                            >
+                              Mô tả
+                            </label>
+                            <div className="relative">
+                              <Field as='textarea'
+                                style={{ backgroundColor: 'transparent' }}
+                                className="w-full rounded border border-stroke bg-gray py-3 pl-3.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                                name="product.description"
+                                id="product.description"
+                                rows={6}
+                                placeholder="Mô tả sản phẩm ..."
+                              />
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2">
+                            <div>
+                              <label className="mb-3 block font-medium text-black dark:text-white">
+                                Size
+                              </label>
+                              <div className='border border-stroke p-2'>
+                                <SizeOptions onSizeChange={(newSize) => setFieldValue('sizeOptions', newSize)} />
+                              </div>
+                            </div>
+                            <div>
+                              <label className="mb-3 block font-medium text-black dark:text-white">
+                                Topping
+                              </label>
+                              <div className='border border-stroke p-2'>
+                                <ToppingOptions onToppingChange={(newTopping) => setFieldValue('toppingOptions', newTopping)}/>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
 
-              {/* <div>
-                <label className="mb-3 block font-medium text-black dark:text-white">
-                  Disabled label
-                </label>
-                <input
-                  type="text"
-                  placeholder="Disabled label"
-                  disabled
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary dark:disabled:bg-black"
-                />
-              </div> */}
-            </div>
-          </div>
+                    <div className="my-3 flex items-center gap-3">
+                      <div>
+                        <span className="mb-1.5 text-black dark:text-white font-medium">
+                          Chọn ảnh sản phẩm
+                        </span>
+                      </div>
+                    </div>
+                    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                      <div className="p-2">
+                        <div className="grid grid-cols-4 gap-1">
+                          {selectedFiles.map((file, i) => (
+                            <div
+                              key={i}
+                              id={`FileUpload${i}`}
+                              className="relative cursor-pointer appearance-none rounded border-dashed border-blue-500 bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5"
+                              style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
 
-          {/* <!-- Toggle switch input --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Toggle switch input
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <SwitcherOne />
-              <SwitcherTwo />
-              <SwitcherThree />
-              <SwitcherFour />
-            </div>
-          </div>
-
-          {/* <!-- Time and date --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Time and date
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <DatePickerOne />
-              <DatePickerTwo />
-            </div>
-          </div>
-
-          {/* <!-- File upload --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                File upload
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Attach file
-                </label>
-                <input
-                  type="file"
-                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                />
-              </div>
-
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Attach file
-                </label>
-                <input
-                  type="file"
-                  className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-9">
-          {/* <!-- Textarea Fields --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            {/* <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Mô tả
-              </h3>
-            </div> */}
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Default textarea
-                </label>
-                <textarea
-                  rows={6}
-                  placeholder="Default textarea"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                ></textarea>
-              </div>
-
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Active textarea
-                </label>
-                <textarea
-                  rows={6}
-                  placeholder="Active textarea"
-                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                ></textarea>
-              </div>
-
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Disabled textarea
-                </label>
-                <textarea
-                  rows={6}
-                  disabled
-                  placeholder="Disabled textarea"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary dark:disabled:bg-black"
-                ></textarea>
+                            >
+                              <input
+                                id='image-input'
+                                type="file"
+                                name='image'
+                                accept="image/*"
+                                className="absolute z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
+                                onChange={handleFileChange}
+                                multiple
+                              />
+                              {file ? (
+                                <img src={file} alt={`preview ${i}`} className="h-full w-full object-cover" style={{ maxWidth: '260px', maxHeight: '260px' }} />
+                              ) : (
+                                <label htmlFor="image-input">
+                                  <div className="flex flex-col items-center justify-center space-y-3">
+                                    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
+                                      {/* svg */}
+                                    </span>
+                                  </div>
+                                </label>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-start gap-3 pt-4">
+                      {/* <button
+                        className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-2 dark:border-strokedark dark:text-white"
+                        type="submit"
+                      >
+                        Xóa
+                      </button> */}
+                      <button
+                        className="flex justify-center rounded bg-primary py-2 px-10 font-medium text-gray hover:bg-opacity-90"
+                        type="submit"
+                      >
+                        Lưu
+                      </button>
+                    </div>
+                  </Form>)}
+                </Formik>
               </div>
             </div>
           </div>
-
-          {/* <!-- Checkbox and radio --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Checkbox and radio
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <CheckboxOne />
-              <CheckboxTwo />
-              <CheckboxThree />
-              <CheckboxFour />
-              <CheckboxFive />
-            </div>
-          </div>
-
-          {/* <!-- Select input --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Select input
-              </h3>
-            </div>
-            <div className="flex flex-col gap-5.5 p-6.5">
-              <SelectGroupTwo />
-              <MultiSelect id="multiSelect" />
-            </div>
+          <div className="col-span-5 xl:col-span-2">
           </div>
         </div>
       </div>
