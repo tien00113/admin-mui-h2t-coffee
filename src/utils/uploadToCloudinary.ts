@@ -1,8 +1,8 @@
 const cloud_name = "ddnepfewc";
-const upload_preset = "g6";
+const upload_preset = "tien_social";
 
-export const uploadToCloudinary = async(pics, fileType)=>{
-    if (pics&&fileType) {
+export const uploadToCloudinary = async(pics: File, fileType: string): Promise<string | undefined> => {
+    if (pics && fileType) {
         const data = new FormData();
         data.append("file", pics);
         data.append("upload_preset", upload_preset);
