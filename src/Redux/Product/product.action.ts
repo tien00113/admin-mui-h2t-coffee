@@ -4,7 +4,7 @@ import { API_BASE_URL, api } from "../../config/api";
 export const getAllProductAction = createAsyncThunk(
     'product',
     async()=>{
-        const response = await api.get(`${API_BASE_URL}/api/products`);
+        const response = await api.get(`${API_BASE_URL}/allproduct`);
         console.log("Tat ca san pham: ------", response.data);
 
         return response.data;

@@ -8,13 +8,17 @@ interface Category {
   id: any;
 }
 
+interface CategoryProps {
+  onCategoryChange: (category: Category) => void;
+  resetTrigger: number;
+}
+
 const Category
-  : React.FC<{ onCategoryChange: (category: Category) => void }> = ({ onCategoryChange }) => {
+  : React.FC<CategoryProps> = ({ onCategoryChange, resetTrigger }) => {
 
     const dispatch: AppDispatch = useDispatch();
     const category = useSelector((state: RootState) => state.category.category);
 
-    console.log("categoiry: ", category)
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
 
@@ -25,6 +29,10 @@ const Category
     useEffect(() => {
       dispatch(getAllCategoryAction());
     }, [dispatch]);
+
+    useEffect(()=>{
+      setSelectedOption(null);
+    },[resetTrigger])
 
     return (
       <div>
@@ -40,9 +48,7 @@ const Category
               const selectedName = e.target.value;
               const selectedCategory = category.find((item: Category) => item.name === selectedName);
               setSelectedOption(selectedName);
-              if (selectedCategory) {
-                onCategoryChange(selectedCategory);
-              }
+              onCategoryChange(selectedCategory);
               changeTextColor();
             }}
             className={`relative z-40 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${isOptionSelected ? 'text-black dark:text-white' : ''
@@ -52,7 +58,7 @@ const Category
               Chọn phân loại
             </option>
             {category && category.map((item: Category) => (
-              <option key={item.id} value={`{"id": ${item.id}}`}>
+              <option key={item.id} value={item.name}>
                 {item.name}
               </option>
             ))}

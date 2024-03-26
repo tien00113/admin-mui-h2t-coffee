@@ -7,9 +7,10 @@ interface Topping {
 
 interface ToppingOptionsProps {
     onToppingChange: (toppingOptions: Topping[]) => void;
+    resetTrigger: number;
 }
 
-const ToppingOptions: React.FC<ToppingOptionsProps> = ({ onToppingChange }) => {
+const ToppingOptions: React.FC<ToppingOptionsProps> = ({ onToppingChange , resetTrigger}) => {
     const [toppingOptions, setToppingOptions] = useState<Topping[]>([]);
     const [name, setName] = useState('');
     const [price, setPrice] = useState<number | null>(null);
@@ -17,6 +18,12 @@ const ToppingOptions: React.FC<ToppingOptionsProps> = ({ onToppingChange }) => {
     useEffect(() => {
         onToppingChange(toppingOptions);
     }, [toppingOptions]);
+
+    useEffect(() => {
+        setName('');
+        setPrice(null);
+        setToppingOptions([]);
+    }, [resetTrigger]);
 
     const handleAddTopping = () => {
         setToppingOptions([...toppingOptions, { name, price }]);
@@ -79,8 +86,8 @@ const ToppingOptions: React.FC<ToppingOptionsProps> = ({ onToppingChange }) => {
                 />
             </div>
             <div className='grid grid-cols-2'>
-                <button className='m-2 rounded-md border border-primary p-2 text-primary' onClick={handleAddTopping}>Thêm</button>
-                <button className='m-2 rounded-md border border-danger p-2 text-danger'>Xóa</button>
+                <button type='button' className='m-2 rounded-md border border-primary p-2 text-primary' onClick={handleAddTopping}>Thêm</button>
+                <button type='button' className='m-2 rounded-md border border-danger p-2 text-danger'>Xóa</button>
             </div>
         </div>
     );

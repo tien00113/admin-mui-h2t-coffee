@@ -7,9 +7,10 @@ interface Size {
 
 interface SizeOptionsProps {
     onSizeChange: (sizeOptions: Size[]) => void;
+    resetTrigger: number;
 }
 
-const SizeOptions: React.FC<SizeOptionsProps> = ({ onSizeChange }) => {
+const SizeOptions: React.FC<SizeOptionsProps> = ({ onSizeChange, resetTrigger}) => {
     const [sizeOptions, setSizeOptions] = useState<Size[]>([]);
     const [name, setName] = useState('');
     const [price, setPrice] = useState<number | null>(null);
@@ -17,6 +18,12 @@ const SizeOptions: React.FC<SizeOptionsProps> = ({ onSizeChange }) => {
     useEffect(() => {
         onSizeChange(sizeOptions);
     }, [sizeOptions]);
+
+    useEffect(() => {
+        setName('');
+        setPrice(null);
+        setSizeOptions([]);
+    }, [resetTrigger]);
 
     const handleAddSize = () => {
         setSizeOptions([...sizeOptions, { name, price }]);
@@ -79,8 +86,8 @@ const SizeOptions: React.FC<SizeOptionsProps> = ({ onSizeChange }) => {
                 />
             </div>
             <div className='grid grid-cols-2'>
-                <button className='m-2 rounded-md border border-primary p-2 text-primary' onClick={handleAddSize}>Thêm</button>
-                <button className='m-2 rounded-md border border-danger p-2 text-danger'>Xóa</button>
+                <button type='button' className='m-2 rounded-md border border-primary p-2 text-primary' onClick={handleAddSize}>Thêm</button>
+                <button type='button' className='m-2 rounded-md border border-danger p-2 text-danger'>Xóa</button>
             </div>
         </div>
     );

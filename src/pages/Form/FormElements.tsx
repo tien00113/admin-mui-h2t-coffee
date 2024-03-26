@@ -1,16 +1,16 @@
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import Category from '../../components/Forms/SelectGroup/Category';
-import { Field, Form, Formik, FormikHelpers } from 'formik';
-import { AppDispatch, RootState } from '../../Redux/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { Field, Form, Formik, FormikHelpers, useFormik } from 'formik';
+import { AppDispatch } from '../../Redux/store';
+import { useDispatch } from 'react-redux';
 import { createProductAction } from '../../Redux/Product/product.action';
 import SizeOptions from '../Product/SizeOptions';
 import ToppingOptions from '../Product/ToppingOptions';
 import { uploadToCloudinary } from '../../utils/uploadToCloudinary';
 import { Backdrop, CircularProgress } from '@mui/material';
-import { createCategory, getAllCategoryAction } from '../../Redux/Category/Category.action';
+import { createCategory } from '../../Redux/Category/Category.action';
 interface Size {
   name: string;
   price: number;
@@ -51,7 +51,6 @@ const initialProductData: ProductData = {
 };
 
 const FormElements = () => {
-  // const category = useSelector((state: RootState) => state.category.category);
   const dispatch: AppDispatch = useDispatch();
   const [selectedFiles, setSelectedFiles] = useState<string[]>(Array(4).fill(''));
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -72,15 +71,15 @@ const FormElements = () => {
     });
   };
 
-  const handleAddProduct = async (values: ProductData, { setSubmitting }: FormikHelpers<ProductData>) => {
-    const data = {
-      ...values,
-      productImages: selectedFiles.filter(imageUrl => imageUrl !== '').map(imageUrl => ({ imageUrl })),
-    }
-    setSubmitting(false);
+  // const handleAddProduct = async (values: ProductData, { setSubmitting }: FormikHelpers<ProductData>) => {
+  //   const data = {
+  //     ...values,
+  //     productImages: selectedFiles.filter(imageUrl => imageUrl !== '').map(imageUrl => ({ imageUrl })),
+  //   }
+  //   setSubmitting(false);
 
-    await dispatch(createProductAction(data));
-  };
+  //   await dispatch(createProductAction(data));
+  // };
 
   const [open, setOpen] = useState(false);
   const handleClose = () => {
@@ -93,16 +92,39 @@ const FormElements = () => {
   const [showInput, setShowInput] = useState<boolean>(false);
   const [newCategory, setNewCategory] = useState<string>('');
 
-  const handleAddCategory = async() => {
-    const obj = { name: newCategory};
+  const handleAddCategory = async () => {
+    const obj = { name: newCategory };
     setShowInput(false);
     await dispatch(createCategory(obj));
-    console.log("da nhan them phan loai ",obj);
+    console.log("da nhan them phan loai ", obj);
   }
 
-  // useEffect(()=>{
-  //   dispatch(getAllCategoryAction());
-  // },[category]);
+  const formik = useFormik({
+    initialValues: initialProductData,
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      const data = {
+        ...values,
+        productImages: selectedFiles.filter(imageUrl => imageUrl !== '').map(imageUrl => ({ imageUrl })),
+      }
+      setSubmitting(false);
+
+      const resultAction = await dispatch(createProductAction(data));
+      if (createProductAction.fulfilled.match(resultAction)) {
+        alert('Đã thêm sản phẩm thành công');
+        resetForm();
+      } else {
+        if (resultAction.payload) {
+          // This is assuming the server's response is in this format
+          const payload = resultAction.payload as { error: string };
+          alert(`Có lỗi xảy ra: ${payload.error}`);
+        } else {
+          alert('Có lỗi xảy ra');
+        }
+      }
+    },
+  });
+
+  const [resetTrigger, setResetTrigger] = useState(0);
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Thêm sản phẩm" />
@@ -116,7 +138,29 @@ const FormElements = () => {
                 </h3>
               </div>
               <div className="p-6">
-                <Formik initialValues={initialProductData} onSubmit={handleAddProduct}>
+                <Formik initialValues={formik.initialValues} onSubmit={async (values, { setSubmitting, resetForm }) => {
+                  const data = {
+                    ...values,
+                    productImages: selectedFiles.filter(imageUrl => imageUrl !== '').map(imageUrl => ({ imageUrl })),
+                  }
+                  setSubmitting(false);
+
+                  const resultAction = await dispatch(createProductAction(data));
+                  if (createProductAction.fulfilled.match(resultAction)) {
+                    alert('Đã thêm sản phẩm thành công');
+                    resetForm();
+                    setResetTrigger(resetTrigger+1);
+                    setSelectedFiles(Array(4).fill(''));
+                  } else {
+                    if (resultAction.payload) {
+                      // This is assuming the server's response is in this format
+                      const payload = resultAction.payload as { error: string };
+                      alert(`Có lỗi xảy ra: ${payload.error}`);
+                    } else {
+                      alert('Có lỗi xảy ra');
+                    }
+                  }
+                }}>
                   {({ setFieldValue }) => (<Form>
                     <section>
                       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -170,13 +214,13 @@ const FormElements = () => {
                           <Category onCategoryChange={(item) => {
                             setFieldValue("product.category", item);
                             setShowAddButton(true);
-                          }} />
+                          }} resetTrigger={resetTrigger} />
                           {!showAddButton &&
                             <div className='flex'>
                               <p onClick={() => setShowInput(!showInput)} className='p-2 border border-primary text-primary rounded-md cursor-pointer'>Thêm phân loại</p>
                               {showInput &&
                                 <div className='flex w-[40%] ml-5'>
-                                  <input className='w-full p-2 border rounded border-stroke focus:border-primary focus-visible:outline-none' type="text"value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder='Nhập tên' />
+                                  <input className='w-full p-2 border rounded border-stroke focus:border-primary focus-visible:outline-none' type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder='Nhập tên' />
                                   <button className='flex bg-primary text-white rounded-md w-25 ml-3 justify-center items-center' onClick={handleAddCategory}>
                                     <p className='p-1'>Xác nhận</p>
                                   </button>
@@ -207,7 +251,7 @@ const FormElements = () => {
                                 Size
                               </label>
                               <div className='border border-stroke p-2'>
-                                <SizeOptions onSizeChange={(newSize) => setFieldValue('sizeOptions', newSize)} />
+                                <SizeOptions onSizeChange={(newSize) => setFieldValue('sizeOptions', newSize)} resetTrigger={resetTrigger} />
                               </div>
                             </div>
                             <div>
@@ -215,7 +259,7 @@ const FormElements = () => {
                                 Topping
                               </label>
                               <div className='border border-stroke p-2'>
-                                <ToppingOptions onToppingChange={(newTopping) => setFieldValue('toppingOptions', newTopping)} />
+                                <ToppingOptions onToppingChange={(newTopping) => setFieldValue('toppingOptions', newTopping)} resetTrigger={resetTrigger}/>
                               </div>
                             </div>
                           </div>
