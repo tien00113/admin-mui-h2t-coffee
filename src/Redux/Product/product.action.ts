@@ -12,11 +12,20 @@ export const getAllProductAction = createAsyncThunk(
 )
 
 export const createProductAction = createAsyncThunk(
-    'product/update',
+    'product/create',
     async(products: any)=>{
         const response = await api.post(`${API_BASE_URL}/admin/products`, products);
         console.log("data product thêm:.............", response.data);
-        console.log("data đầu vào nẹ", products);
+        return response.data;
+    }
+)
+
+export const updateProductAction = createAsyncThunk(
+    'product/update',
+    async(product: any) =>{
+        const response = await api.put(`${API_BASE_URL}/admin/products/update`, product);
+        console.log("đã sửa product thành công: ", response);
+
         return response.data;
     }
 )

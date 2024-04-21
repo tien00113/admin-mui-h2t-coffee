@@ -15,10 +15,11 @@ import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import { Link } from 'react-router-dom';
 
 interface Data {
   id: number;
@@ -73,10 +74,10 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0;
 }
 
-type Order = 'asc' | 'desc';
+type SortOrder = 'asc' | 'desc';
 
 function getComparator<Key extends keyof any>(
-  order: Order,
+  order: SortOrder,
   orderBy: Key,
 ): (
   a: { [key in Key]: number | string },
@@ -115,7 +116,7 @@ const headCells: readonly HeadCell[] = [
     id: 'name',
     numeric: false,
     disablePadding: true,
-    label: 'Dessert (100g serving)',
+    label: 'Dessert (100g serving)',
   },
   {
     id: 'calories',
@@ -147,12 +148,12 @@ interface EnhancedTableProps {
   numSelected: number;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  order: Order;
+  order: SortOrder;
   orderBy: string;
   rowCount: number;
 }
 
-function TablePage(props: EnhancedTableProps) {
+function EnhancedTableHead(props: EnhancedTableProps) {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
     props;
   const createSortHandler =
@@ -225,7 +226,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} chọn
+          {numSelected} selected
         </Typography>
       ) : (
         <Typography
@@ -234,12 +235,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          {/* Nutrition */}
-          <Tooltip title="Phân loại">
-            <IconButton>
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
+          Nutrition
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -249,23 +245,17 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           </IconButton>
         </Tooltip>
       ) : (
-        // <Tooltip title="Filter list">
-        //   {/* <IconButton>
-        //     <FilterListIcon />
-        //   </IconButton> */}
-        // </Tooltip>
-        <Link
-          to="#"
-          className="inline-flex items-center justify-center text-sm rounded-md border border-primary py-2 px-4 text-center font-medium text-primary hover:bg-opacity-90 lg:px-2 xl:px-8"
-        >
-          Thêm mới
-        </Link>
+        <Tooltip title="Filter list">
+          <IconButton>
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
       )}
     </Toolbar>
   );
 }
-const EnhancedTable = () => {
-  const [order, setOrder] = React.useState<Order>('asc');
+export default function EnhancedTable() {
+  const [order, setOrder] = React.useState<SortOrder>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('calories');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
@@ -318,6 +308,10 @@ const EnhancedTable = () => {
     setPage(0);
   };
 
+  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDense(event.target.checked);
+  };
+
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -343,7 +337,7 @@ const EnhancedTable = () => {
             aria-labelledby="tableTitle"
             size={dense ? 'small' : 'medium'}
           >
-            <TablePage
+            <EnhancedTableHead
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -413,12 +407,10 @@ const EnhancedTable = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      {/* <FormControlLabel
+      <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
-      /> */}
+      />
     </Box>
   );
 }
-
-export default EnhancedTable;

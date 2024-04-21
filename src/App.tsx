@@ -37,7 +37,7 @@ function App() {
   return loading ? (<Loader />) : (
     <>
       <Routes>
-        <Route path='/*' element={admin ? <HomePage /> : <Authentication />} />
+        <Route path='/*' element={jwt&&admin ? <HomePage /> : <Authentication />} />
       </Routes>
     </>
   );

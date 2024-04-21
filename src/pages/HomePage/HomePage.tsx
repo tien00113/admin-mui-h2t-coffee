@@ -11,6 +11,9 @@ import Chart from '../Chart'
 import Alerts from '../UiElements/Alerts'
 import Buttons from '../UiElements/Buttons'
 import AddProduct from '../Product/AddProduct'
+import OrderDetail from '../OrderDetail'
+import EnhancedTable from '../../components/Tables/EnhancedTable'
+
 
 const HomePage = () => {
   return (
@@ -32,6 +35,15 @@ const HomePage = () => {
             <>
               <PageTitle title="Đơn hàng | H2T - Coffee" />
               <Order />
+            </>
+          }
+        />
+        <Route
+          path="/don-hang/chi-tiet"
+          element={
+            <>
+              <PageTitle title="Đơn hàng | H2T - Coffee" />
+              <OrderDetail />
             </>
           }
         />
@@ -59,6 +71,15 @@ const HomePage = () => {
             <>
               <PageTitle title="Form Layout | H2T - Coffee" />
               <FormLayout />
+            </>
+          }
+        />
+        <Route
+          path="/tablepage"
+          element={
+            <>
+              <PageTitle title="Form Layout | H2T - Coffee" />
+              <EnhancedTable/>
             </>
           }
         />
@@ -116,7 +137,16 @@ const HomePage = () => {
             </>
           }
         />
-        </Routes>
+        <Route
+          path='/san-pham/chinh-sua'
+          element={
+            <>
+              <PageTitle title="Sửa sản phẩm | H2T - Coffee" />
+              <FormElements />
+            </>
+          }
+        />
+      </Routes>
     </div>
   )
 }

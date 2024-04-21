@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createProductAction, getAllProductAction } from "./product.action";
+import { createProductAction, getAllProductAction, updateProductAction } from "./product.action";
 interface Product{
     error: string | null,
     loading: boolean,
-    product: any
+    product: any,
+    updateProduct: any,
 }
 
 const initialState: Product = {
     error:null,
     loading: false,
-    product:null
+    product:null,
+    updateProduct: null,
 }
 const productSlice = createSlice({
     name:'product',
@@ -43,7 +45,23 @@ const productSlice = createSlice({
         builder.addCase(createProductAction.rejected, (state, action)=>{
             state.error = action.error.message || null;
             state.loading = false;
-        })
+        });
+
+
+        //update product
+
+        builder.addCase(updateProductAction.pending, (state)=>{
+            state.loading = true;
+            state.error= null;
+        });
+        builder.addCase(updateProductAction.fulfilled, (state, action: PayloadAction<any>)=>{
+            state.updateProduct = action.payload;
+            state.loading=false
+        });
+        builder.addCase(updateProductAction.rejected, (state, action)=>{
+            state.error = action.error.message || null;
+            state.loading=false;
+        });
     },
 });
 

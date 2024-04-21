@@ -17,7 +17,7 @@ export const API_BASE_URL = "http://localhost:5454";
 
 const jwtToken = localStorage.getItem("jwt");
 
-const port = window.location.port;
+// const port = window.location.port;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -36,6 +36,6 @@ api.interceptors.request.use((config) => {
     console.log("Không tìm thấy jwtToken trong localStorage");
   }
   //thêm vào header 1 giá trị là cổng mà frontend đang dùng.
-  config.headers['X-Client-Port'] = `${port}`;
+  // config.headers['X-Client-Port'] = `${port}`;
   return config;
 });

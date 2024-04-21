@@ -11,10 +11,11 @@ interface Category {
 interface CategoryProps {
   onCategoryChange: (category: Category) => void;
   resetTrigger: number;
+  product: any | null;
 }
 
 const Category
-  : React.FC<CategoryProps> = ({ onCategoryChange, resetTrigger }) => {
+  : React.FC<CategoryProps> = ({ onCategoryChange, resetTrigger, product }) => {
 
     const dispatch: AppDispatch = useDispatch();
     const category = useSelector((state: RootState) => state.category.category);
@@ -54,7 +55,7 @@ const Category
             className={`relative z-40 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary ${isOptionSelected ? 'text-black dark:text-white' : ''
               }`}
           >
-            <option value="" disabled className="text-body dark:text-bodydark">
+            <option value={product ? product : ''} disabled className="text-body dark:text-bodydark">
               Chọn phân loại
             </option>
             {category && category.map((item: Category) => (

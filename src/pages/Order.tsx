@@ -1,65 +1,61 @@
-import { Box, InputBase, Pagination, alpha, styled } from '@mui/material';
+import { Box, IconButton, InputBase, Menu, MenuItem } from '@mui/material';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import TableThree from '../components/Tables/TableThree';
 import DefaultLayout from '../layout/DefaultLayout';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import { useState } from 'react';
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(0),
-    width: 'auto',
-  },
-}));
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 1),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  width: '100%',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    [theme.breakpoints.up('sm')]: {
-      width: '12ch',
-      '&:focus': {
-        width: '20ch',
-      },
-    },
-  },
-}));
 const Order = () => {
+  // const [anchorEl, setAnchorEl] = useState(null);
+  // const open = Boolean(anchorEl);
+
+  // const handleClick = (event: any) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  // };
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Đơn hàng" />
-      <Search>
-        <SearchIconWrapper>
-          ID:
-        </SearchIconWrapper>
-        <StyledInputBase
-          placeholder="Tìm đơn hàng ..."
-        // inputProps={{ 'aria-label': 'search' }}
-        />
-      </Search>
+      {/* <div className='flex'>
+        <div>
+          <Box
+            component="form"
+            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 250 }}
+          >
+            <IconButton
+              sx={{ p: '10px' }}
+              aria-label="menu"
+              onClick={handleClick}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleClose}>Chờ Xác Nhận</MenuItem>
+              <MenuItem onClick={handleClose}>Chờ Giao Hàng</MenuItem>
+              <MenuItem onClick={handleClose}>Đang Giao</MenuItem>
+              <MenuItem onClick={handleClose}>Hoàn Thành</MenuItem>
+              <MenuItem onClick={handleClose}>Đã Hủy</MenuItem>
+            </Menu>
+            <InputBase
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Tìm Đơn Hàng..."
+              inputProps={{ 'aria-label': 'search order' }}
+            />
+            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        </div>
+      </div> */}
       <TableThree />
-      <Box display='flex' justifyContent="center" paddingTop="1rem">
-        <Pagination count={10} color='primary' />
-      </Box>
     </DefaultLayout>
   );
 };
