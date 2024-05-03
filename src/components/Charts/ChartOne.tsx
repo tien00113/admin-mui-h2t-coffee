@@ -1,6 +1,11 @@
 import { ApexOptions } from 'apexcharts';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import { AppDispatch, RootState } from '../../Redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { getStatsLastDayAction } from '../../Redux/Admin/admin.action';
+import DatePickerOne from '../Forms/DatePicker/DatePickerOne';
+import DatePickerTwo from '../Forms/DatePicker/DatePickerTwo';
 
 const options: ApexOptions = {
   legend: {
@@ -111,7 +116,7 @@ const options: ApexOptions = {
       },
     },
     min: 0,
-    max: 100,
+    max: 100000,
   },
 };
 
@@ -123,16 +128,18 @@ interface ChartOneState {
 }
 
 const ChartOne: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const stats = useSelector((state: RootState) => state.admin.stats);
   const [state, setState] = useState<ChartOneState>({
     series: [
       {
-        name: 'Product One',
-        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
+        name: 'Doanh Số',
+        data: stats?.revenue || [],
       },
 
       {
-        name: 'Product Two',
-        data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
+        name: 'Đơn Hàng',
+        data: stats?.orders || [],
       },
     ],
   });
@@ -144,6 +151,78 @@ const ChartOne: React.FC = () => {
   };
   handleReset;
 
+  const [days, setDays] = useState<Number>(7);
+  const [dates, setDates] = useState<string[]>();
+  const [option, setOption] = useState(options);
+
+  useEffect(() => {
+    dispatch(getStatsLastDayAction(days));
+    if (stats) {
+      setDates(stats.dates);
+    }
+  }, [dispatch, days]);
+
+  useEffect(() => {
+    if (stats) {
+      const formattedDates = stats.dates.map((date: string) => {
+        const d = new Date(date);
+        return `${("0" + d.getDate()).slice(-2)}/${("0" + (d.getMonth() + 1)).slice(-2)}`;
+      });
+
+      setDates(formattedDates);
+      setState({
+        series: [
+          {
+            name: 'Doanh Số',
+            data: stats?.revenue || [],
+          },
+          {
+            name: 'Đơn Hàng',
+            data: stats?.orders || [],
+          },
+        ],
+      });
+    }
+  }, [stats]);
+
+  useEffect(() => {
+    if (dates) {
+      const updatedOptions = {
+        ...options,
+        xaxis: {
+          ...options.xaxis,
+          categories: dates,
+        },
+      };
+      setOption(updatedOptions);
+    }
+  }, [dates]);
+
+
+  let minDate, maxDate;
+
+  if (dates) {
+    const dateObjects = stats.dates.map((date: string) => new Date(date));
+
+    // Sắp xếp mảng dateObjects
+    dateObjects.sort((a: { getTime: () => number; }, b: { getTime: () => number; }) => a.getTime() - b.getTime());
+
+    // Ngày nhỏ nhất là phần tử đầu tiên, ngày lớn nhất là phần tử cuối cùng
+    minDate = dateObjects[0];
+    maxDate = dateObjects[dateObjects.length - 1];
+  }
+
+
+  // Định dạng ngày theo định dạng dd.mm.yyyy
+  const formatDate = (date: Date) => {
+    const day = ("0" + date.getDate()).slice(-2);
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
+
+  console.log(dates);
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
       <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
@@ -154,7 +233,7 @@ const ChartOne: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-primary">Tổng doanh số</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              {/* <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p> */}
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -163,29 +242,35 @@ const ChartOne: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-secondary">Tổng đơn hàng</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              {/* <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p> */}
             </div>
+          </div>
+          <div className='flex'>
+            <p className="text-sm font-medium justify-center items-center">
+              <span className='font-medium'>Thời gian:</span> {minDate && maxDate ? `${formatDate(minDate)} - ${formatDate(maxDate)}` : ''}
+            </p>
           </div>
         </div>
         <div className="flex w-full max-w-45 justify-end">
           <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
-            <button className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
-              Ngày
-            </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
+            <button onClick={() => setDays(7)} className={`rounded py-1 px-3 text-xs font-medium text-black ${days === 7 ? 'shadow-card' : ''} hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark`}>
               Tuần
             </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
+            <button onClick={() => setDays(30)} className={`rounded py-1 px-3 ${days === 30 ? 'shadow-card' : ''} text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark`}>
               Tháng
             </button>
           </div>
         </div>
       </div>
 
+      {/* <div>
+        <DatePickerOne/>
+      </div> */}
+
       <div>
         <div id="chartOne" className="-ml-5">
           <ReactApexChart
-            options={options}
+            options={option}
             series={state.series}
             type="area"
             height={350}

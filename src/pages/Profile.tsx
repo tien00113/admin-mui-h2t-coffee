@@ -3,6 +3,8 @@ import DefaultLayout from '../layout/DefaultLayout';
 import CoverOne from '../images/cover/cover-01.png';
 import userSix from '../images/user/user-06.png';
 import { Link } from 'react-router-dom';
+import FormLayout from './Form/FormLayout';
+import TableOne from '../components/Tables/TableOne';
 
 const Profile = () => {
   return (
@@ -281,6 +283,8 @@ const Profile = () => {
           </div>
         </div>
       </div>
+      {/* <TableOne/> */}
+   
     </DefaultLayout>
   );
 };

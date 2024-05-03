@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { API_BASE_URL } from '../../config/api';
+import { API_BASE_URL, api } from '../../config/api';
 
 interface LoginData {
   email: string;
@@ -41,3 +41,30 @@ export const logoutAction = createAsyncThunk(
     return response.data;
   }
 );
+
+export const dashBoardAction = createAsyncThunk(
+  'admin/dashboard',
+  async() => {
+    const response = await api.get(`${API_BASE_URL}/admin/dashboard`);
+
+    return response.data;
+  }
+);
+
+export const getStatsLastDayAction = createAsyncThunk(
+  'admin/stats',
+  async(days: any) => {
+    const response = await api.get(`${API_BASE_URL}/admin/dashboard/stats/${days}`);
+
+    return response.data;
+  }
+)
+
+export const getCusTomerAction = createAsyncThunk(
+  'admin/customer',
+  async() => {
+    const response = await api.get(`${API_BASE_URL}/admin/customer`);
+
+    return response.data;
+  }
+)

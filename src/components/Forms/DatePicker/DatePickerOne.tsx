@@ -1,5 +1,6 @@
 import flatpickr from 'flatpickr';
 import { useEffect } from 'react';
+import 'flatpickr/dist/themes/light.css'; // Import the Flatpickr theme CSS
 
 const DatePickerOne = () => {
   useEffect(() => {
@@ -8,7 +9,26 @@ const DatePickerOne = () => {
       mode: 'single',
       static: true,
       monthSelectorType: 'static',
-      dateFormat: 'M j, Y',
+      dateFormat: 'j/m/Y', // Changed dateFormat to use numerical month
+      locale: {
+        months: {
+          shorthand: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+          longhand: [
+            '01',
+            '02',
+            '03',
+            '04',
+            '05',
+            '06',
+            '07',
+            '08',
+            '09',
+            '10',
+            '11',
+            '12',
+          ],
+        },
+      },
       prevArrow:
         '<svg className="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M5.4 10.8l1.4-1.4-4-4 4-4L5.4 0 0 5.4z" /></svg>',
       nextArrow:

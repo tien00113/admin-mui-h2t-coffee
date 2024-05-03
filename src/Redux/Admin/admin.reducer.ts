@@ -1,11 +1,14 @@
-import { createSlice, PayloadAction} from '@reduxjs/toolkit';
-import { getProfileAction, loginAction, logoutAction } from './admin.action';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { dashBoardAction, getCusTomerAction, getProfileAction, getStatsLastDayAction, loginAction, logoutAction } from './admin.action';
 
 interface AuthState {
   jwt: string | null;
   error: string | null;
   loading: boolean;
-  auth: any
+  auth: any,
+  dashboard: any,
+  stats: any,
+  customer: [],
 }
 
 const initialState: AuthState = {
@@ -13,6 +16,9 @@ const initialState: AuthState = {
   error: null,
   loading: false,
   auth: null,
+  dashboard: null,
+  stats: null,
+  customer: [],
 };
 
 const authSlice = createSlice({
@@ -49,21 +55,54 @@ const authSlice = createSlice({
     });
     //////////////////////////////////////////////////
     ////////////////logout///////////////////////////
-    builder.addCase(logoutAction.pending, (state)=>{
+    builder.addCase(logoutAction.pending, (state) => {
       state.loading = true;
       state.error = null;
     });
-    builder.addCase(logoutAction.fulfilled, (state)=>{
+    builder.addCase(logoutAction.fulfilled, (state) => {
       state.auth = null;
       state.loading = false;
       state.error = null;
     });
-    builder.addCase(logoutAction.rejected, (state, action)=>{
+    builder.addCase(logoutAction.rejected, (state, action) => {
       state.error = action.error.message || null;
       state.loading = false;
     });
     //////////////////////////////////////////////////////
+    builder.addCase(dashBoardAction.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    }).addCase(dashBoardAction.fulfilled, (state, action) => {
+      state.dashboard = action.payload;
+      state.error = null;
+      state.loading = false;
+    }).addCase(dashBoardAction.rejected, (state, action) => {
+      state.error = action.error.message || null;
+      state.loading = false;
+    });
 
+    ///////////////////////////////////////////////////////////
+    builder.addCase(getStatsLastDayAction.pending,(state)=>{
+      state.loading = true;
+      state.error = null;
+    }).addCase(getStatsLastDayAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.stats = action.payload;
+    }).addCase(getStatsLastDayAction.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message || null;
+    });
+    /////////////////////////////////////////////////////////////
+    builder.addCase(getCusTomerAction.pending, (state)=>{
+      state.loading = true;
+      state.error = null;
+    }).addCase(getCusTomerAction.fulfilled, (state, action)=>{
+      state.customer = action.payload;
+      state.loading = false;
+    }).addCase(getCusTomerAction.rejected, (state, action)=>{
+      state.error = action.error.message || null;
+      state.loading = false;
+    })
   },
 });
 

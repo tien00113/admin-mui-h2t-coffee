@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import displayMoney from '../../utils/displayMoney';
 
 interface Topping {
     name: string;
@@ -60,16 +61,16 @@ const ToppingOptions: React.FC<ToppingOptionsProps> = ({ onToppingChange, resetT
                 {toppingOptions.map((topping, index) => (
                     <div
                         key={index}
-                        className="m-1 flex items-center justify-center rounded border-[.5px] border-stroke bg-gray px-2.5 py-1.5 text-sm font-medium dark:border-strokedark dark:bg-white/30"
+                        className="m-1 -translate-x-4 flex items-center justify-center rounded border-[.5px] border-stroke bg-gray px-2.5 py-1.5 text-sm font-medium dark:border-strokedark dark:bg-white/30"
                     >
                         <div className='flex cursor-pointer' onClick={() => handleClickTopping(topping, index)}>
                             <div className="max-w-full flex-initial">
-                                {topping.name}
+                                {topping.name} ({topping?.price !== null ? displayMoney(topping.price) : 'N/A'})
                             </div>
                             <div className="flex flex-auto flex-row-reverse">
                                 <div
-                                    className="cursor-pointer pl-2 hover:text-danger"
-                                    onClick={(e) => {e.stopPropagation(); handleRemoveTopping(index)}}
+                                    className="cursor-pointer pl-2 translate-x-1 -translate-y-1 hover:text-danger"
+                                    onClick={(e) => { e.stopPropagation(); handleRemoveTopping(index) }}
                                 >
                                     <svg
                                         className="fill-current"
@@ -93,7 +94,7 @@ const ToppingOptions: React.FC<ToppingOptionsProps> = ({ onToppingChange, resetT
                     </div>
                 ))}
             </div>
-            <div className='p-2 border border-stroke'>
+            <div className='mb-2 border border-[#b8bdc9] w-[60%]'>
                 <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -102,7 +103,7 @@ const ToppingOptions: React.FC<ToppingOptionsProps> = ({ onToppingChange, resetT
                     placeholder='Tên'
                 />
             </div>
-            <div className='p-2 border border-stroke'>
+            <div className='border border-[#b8bdc9] w-[60%]'>
                 <input
                     value={price !== null ? price : ''}
                     onChange={(e) => setPrice(Number(e.target.value))}
@@ -111,9 +112,9 @@ const ToppingOptions: React.FC<ToppingOptionsProps> = ({ onToppingChange, resetT
                     placeholder='Giá Thêm(Vnd)'
                 />
             </div>
-            <div className='grid grid-cols-2'>
-                <button type='button' className='m-2 rounded-md border border-primary p-2 text-primary' onClick={handleAddTopping}>Thêm</button>
-                <button type='button' className='m-2 rounded-md border border-danger p-2 text-danger'>Xóa</button>
+            <div className='flex'>
+                <button type='button' className='m-2 rounded-md border bg-primary py-2 px-[6%] text-white hover:opacity-90 translate-y-2' onClick={handleAddTopping}>Thêm</button>
+                <button type='button' className='m-2 rounded-md border bg-danger py-2 px-[8%] text-white hover:opacity-90 translate-y-2'>Đặt Lại</button>
             </div>
         </div>
     );

@@ -4,12 +4,66 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../Redux/store';
 import { getAllOrderAction } from '../../Redux/Order/order.action';
 import { Box, Button, Checkbox, IconButton, InputBase, Menu, MenuItem, TablePagination } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import SortIcon from '@mui/icons-material/Sort';
+import SockJS from 'sockjs-client';
+import { Client, Stomp } from '@stomp/stompjs';
+import Stom from 'stompjs';
+import displayMoney from '../../utils/displayMoney';
 
 const TableThree = () => {
   const order = useSelector((state: RootState) => state.order.orders);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   const socket =new WebSocket('ws://localhost:5454/ws');
+  //   // const client = Stomp.client(socket);
+  //   const stompClient = Stomp.over(socket);
+
+  //   stompClient.connect({}, () => {
+  //     stompClient.subscribe('/topic/orders', (message) => {
+  //       console.log('Received message:', message.body);
+  //     });
+  //   });
+
+  //   return () => {
+  //     stompClient.disconnect();
+  //   };
+  // }, []);
+  const [stompClient, setStompClient] = useState<any>(null); // Sử dụng kiểu any tạm thời
+
+  useEffect(() => {
+    const sock = new SockJS("http://localhost:5454/ws");
+    const stomp = Stom.over(sock);
+  
+    stomp.connect({}, () => {
+      console.log("websocket connected--------")
+      setStompClient(stomp); // Lưu trữ stomp client vào state
+    }, (error: any) => {
+      console.log("erorr------------", error);
+    });
+  
+  }, []);
+
+
+useEffect(() => {
+  if (stompClient) {
+    const subscription = stompClient.subscribe('/topic/orders',
+      onOrderReceive) 
+    return () => subscription.unsubscribe(); // Hủy đăng ký subscription khi component unmount
+  }
+}, [stompClient]); // Chỉ chạy lại effect khi giá trị của stompClient thay đổi
+
+const onOrderReceive = (payload: any) => {
+  const receivedMessage = JSON.parse(payload.body);
+  console.log("message receive from websocket ", receivedMessage);
+
+  // setMessages([...mess, receivedMessage])
+  return receivedMessage;
+}
+
+
+
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -127,7 +181,7 @@ const TableThree = () => {
           aria-label="menu"
           onClick={handleClickMenu}
         >
-          <MenuIcon />
+          <SortIcon />
         </IconButton>
         <Menu
           anchorEl={anchorEl}
@@ -164,7 +218,7 @@ const TableThree = () => {
                     }}
                   />
                 </th>
-                <th className='text-black font-medium'>
+                <th className='text-black font-medium dark:text-white'>
                   Mã Đơn Hàng
                 </th>
                 <th className="min-w-[220px] py-4 px-4 text-center font-medium text-black dark:text-white xl:pl-11">
@@ -205,7 +259,7 @@ const TableThree = () => {
                         }}
                       />
                     </td>
-                    <td className='text-black font-light'>
+                    <td className='text-black font-light dark:text-white'>
                       {item?.orderId}
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
@@ -221,8 +275,8 @@ const TableThree = () => {
                       </div>
                     </td>
                     <td className=''>
-                      <div className='text-black flex justify-center'>
-                        <p>{item?.totalSalePrice}</p>
+                      <div className='text-primary flex justify-center dark:text-white'>
+                        <p>{displayMoney(item?.totalSalePrice)}</p>
                       </div>
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -332,7 +386,7 @@ const TableThree = () => {
                   <td></td>
                   <td className='flex justify-center items-center text-xl '>Không Có Kết Quả!</td>
                 </tr>
-                
+
               )
               }
             </tbody>

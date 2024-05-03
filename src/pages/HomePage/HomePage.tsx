@@ -13,6 +13,7 @@ import Buttons from '../UiElements/Buttons'
 import AddProduct from '../Product/AddProduct'
 import OrderDetail from '../OrderDetail'
 import EnhancedTable from '../../components/Tables/EnhancedTable'
+import Customer from '../Customer'
 
 
 const HomePage = () => {
@@ -24,7 +25,7 @@ const HomePage = () => {
           index
           element={
             <>
-              <PageTitle title="eCommerce Dashboard | H2T - Coffee" />
+              <PageTitle title="Home | H2T - Coffee" />
               <ECommerce />
             </>
           }
@@ -66,11 +67,11 @@ const HomePage = () => {
           }
         />
         <Route
-          path="/forms/form-layout"
+          path="/khach-hang"
           element={
             <>
               <PageTitle title="Form Layout | H2T - Coffee" />
-              <FormLayout />
+              <Customer />
             </>
           }
         />

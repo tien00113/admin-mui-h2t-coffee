@@ -76,7 +76,7 @@ const DropdownNotification = () => {
         }`}
       >
         <div className="px-4.5 py-3">
-          <h5 className="text-sm font-medium text-bodydark2">Notification</h5>
+          <h5 className="text-sm font-medium text-bodydark2">Thông Báo</h5>
         </div>
 
         <ul className="flex h-auto flex-col overflow-y-auto">

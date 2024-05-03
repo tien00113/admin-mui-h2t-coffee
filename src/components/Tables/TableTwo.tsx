@@ -84,7 +84,7 @@ const TableTwo = () => {
                 >
 
                   {category.map((ctg: any) =>
-                    <MenuItem onClick={() => handleClose(ctg?.name)}>{ctg?.name}</MenuItem>
+                    <MenuItem key={ctg?.id} onClick={() => handleClose(ctg?.name)}>{ctg?.name}</MenuItem>
                   )}
                 </Menu>
                 <InputBase
@@ -105,15 +105,21 @@ const TableTwo = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-11 border-t border-stroke py-4.5 px-4 dark:border-strokedark md:px-6 2xl:px-8">
-          <div className="col-span-2 flex items-center justify-center">
+        <div className="grid grid-cols-6 border-t border-stroke py-4.5 px-4 dark:border-strokedark md:px-6 2xl:px-8">
+          <div className="col-span-1 flex items-center justify-center">
+            <div className="font-medium">Ảnh</div>
+          </div>
+          <div className="col-span-1 flex items-center justify-center">
             <div className="font-medium">Tên</div>
           </div>
-          <div className="col-span-1 hidden items-center justify-center sm:flex">
-            <p className="font-medium">Phân loại</p>
+          <div className="col-span-1 items-center justify-center sm:flex">
+            <p className="font-medium">Phân Loại</p>
           </div>
           <div className="col-span-1 flex items-center justify-center">
             <p className="font-medium">Giá</p>
+          </div>
+          <div className="col-span-1 flex items-center justify-center">
+            <p className="font-medium">Lượt Bán</p>
           </div>
           {/* <div className="col-span-1 flex items-center justify-center">
           <p className="font-medium">Size</p>
@@ -121,12 +127,12 @@ const TableTwo = () => {
         <div className="col-span-1 flex items-center justify-center">
           <p className="font-medium">Topping</p>
         </div> */}
-          <div className='col-span-3 flex justify-center items-center font-medium'>
+          {/* <div className='col-span-3 flex justify-center items-center font-medium'>
             Size
           </div>
           <div className='col-span-3 flex justify-center items-center font-medium'>
             Topping
-          </div>
+          </div> */}
           <div className="col-span-1 flex items-center justify-center">
             <p className="font-medium">Hành động</p>
           </div>
@@ -134,35 +140,46 @@ const TableTwo = () => {
 
         {productData && currentProductData.map((item: any, index: number) => (
           <div
-            className="grid grid-cols-11 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-11 md:px-6 2xl:px-8"
+            className={`grid grid-cols-6 border-t border-stroke py-2 px-4 dark:border-strokedark sm:grid-cols-6 md:px-6 2xl:px-8 ${(index) % 2 === 0 ? 'bg-[#dadee277] dark:bg-[#292c31]' : ''}`}
             key={index}
           >
-            <div className="col-span-2 flex items-center ">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <div className="h-10 w-12 rounded-md py-2 -translate-y-6">
-
+            <div className="col-span-1 flex items-center justify-center">
+              {/* <div className="gap-4 sm:flex-row sm:items-center">
+                <div className="h-10 w-full rounded-md py-2 -translate-y-6">
                   <img className='object-cover' width={"70rem"} src={item?.image[0]?.imageUrl} alt="product" />
-
                 </div>
-                <p className="text-sm text-black dark:text-white ">
-                  {item?.name}
-                </p>
+              </div> */}
+              <div className='flex'>
+                <img className='object-cover h-auto max-w-full max-h-20 rounded-lg mx-1' width={"70rem"} src={item?.image[0]?.imageUrl} alt="product" />
+                {/* <img className='object-cover h-auto max-w-full max-h-20 rounded-lg' width={"70rem"} src={item?.image[0]?.imageUrl} alt="product" />
+                <img className='object-cover h-auto max-w-full max-h-20 rounded-lg mx-1' width={"70rem"} src={item?.image[0]?.imageUrl} alt="product" />
+                <img className='object-cover h-auto max-w-full max-h-20 rounded-lg' width={"70rem"} src={item?.image[0]?.imageUrl} alt="product" /> */}
               </div>
             </div>
-            <div className="col-span-1 hidden items-center justify-center sm:flex">
+            <div className='col-span-1 flex items-center justify-center'>
+              <p className="text-sm text-black dark:text-white ">
+                {item?.name}
+              </p>
+            </div>
+            <div className="col-span-1 items-center justify-center sm:flex">
               <p className="text-sm text-black dark:text-white">
                 {item?.category?.name}
               </p>
             </div>
-            <div className="col-span-1 flex flex-col items-center">
-              <div className="text-black font-medium dark:text-white">
+            <div className="col-span-1 flex flex-col items-center justify-center">
+              <div className="text-primary font-medium dark:text-white">
                 {displayMoney(item?.price)}
               </div>
               <div className="text-sm text-black dark:text-white font-light line-through">
                 {displayMoney(item?.salePrice)}
               </div>
             </div>
-            <div className='col-span-3 -translate-y-4'>
+            <div className='col-span-1 flex flex-col items-center justify-center'>
+              <p>
+                {item?.sold}
+              </p>
+            </div>
+            {/* <div className='col-span-3 -translate-y-4'>
               <div className='ml-2 translate-y-2 flex p-1 justify-center'>
                 {item?.sizeOptions.map((size: any) => (
                   <p className='px-1'>
@@ -187,7 +204,7 @@ const TableTwo = () => {
                     </span>
                   </p>))}
               </div>
-            </div>
+            </div> */}
             <div className="col-span-1 flex items-center justify-center">
               <p title='Chỉnh Sửa' className='cursor-pointer text-primary' onClick={() => navigate('/san-pham/chinh-sua', { state: { item: item } })}><EditIcon /></p>
               <p title='Xóa' className='px-2 cursor-pointer text-red-500'>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import displayMoney from '../../utils/displayMoney';
 
 interface Size {
     id?: number;
@@ -65,7 +66,7 @@ const SizeOptions: React.FC<SizeOptionsProps> = ({ onSizeChange, resetTrigger, p
                     >
                         <div className='flex cursor-pointer' onClick={() => handleClickSize(size, index)}>
                             <div className="max-w-full flex-initial">
-                                {size.name} ({size.price})
+                                {size.name} ({size?.price !== null ? displayMoney(size.price) : 'N/A'})
                             </div>
                             <div className="flex flex-auto flex-row-reverse">
                                 <div
@@ -94,7 +95,7 @@ const SizeOptions: React.FC<SizeOptionsProps> = ({ onSizeChange, resetTrigger, p
                     </div>
                 ))}
             </div>
-            <div className='p-2 border border-stroke'>
+            <div className='mb-2 border border-[#b8bdc9] w-[60%]'>
                 <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -103,7 +104,7 @@ const SizeOptions: React.FC<SizeOptionsProps> = ({ onSizeChange, resetTrigger, p
                     placeholder='Tên'
                 />
             </div>
-            <div className='p-2 border border-stroke'>
+            <div className='border border-[#b8bdc9] w-[60%]'>
                 <input
                     value={price !== null ? price : ''}
                     onChange={(e) => setPrice(Number(e.target.value))}
@@ -112,9 +113,9 @@ const SizeOptions: React.FC<SizeOptionsProps> = ({ onSizeChange, resetTrigger, p
                     placeholder='Giá Thêm(Vnd)'
                 />
             </div>
-            <div className='grid grid-cols-2'>
-                <button type='button' className='m-2 rounded-md border border-primary p-2 text-primary' onClick={handleAddSize}>Thêm</button>
-                <button type='button' className='m-2 rounded-md border border-danger p-2 text-danger'>Xóa</button>
+            <div className='flex'>
+                <button type='button' className='m-2 rounded-md border bg-primary py-2 px-[6%] text-white hover:opacity-90 translate-y-2' onClick={handleAddSize}>Thêm</button>
+                <button type='button' className='m-2 rounded-md border bg-danger py-2 px-[8%] text-white hover:opacity-90 translate-y-2'>Đặt Lại</button>
             </div>
         </div>
     );

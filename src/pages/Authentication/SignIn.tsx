@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { loginAction } from '../../Redux/Admin/admin.action';
-import { AppDispatch, RootState } from '../../Redux/store';
+import { AppDispatch } from '../../Redux/store';
 import { unwrapResult } from '@reduxjs/toolkit';
 import ErrorLogin from '../Error/ErrorLogin';
 
@@ -19,20 +19,15 @@ const initialValues: LoginData = {
 
 
 const SignIn: React.FC = () => {
-  const admin = useSelector((state: RootState) => state.admin.auth);
   const [loginError, setLoginError] = useState<string | null>(null);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const jwt = localStorage.getItem("jwt");
   const handleSubmitLogin = async (values: LoginData) => {
 
     const results = await dispatch(loginAction(values));
     unwrapResult(results);
     navigate("/");
   }
-
-  console.log("admin trang dăng nhập: ", admin);
-  console.log("jwt trang dăng nhập: ", jwt);
 
   return (
     <div className='p-5'>

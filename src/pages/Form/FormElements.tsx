@@ -159,8 +159,6 @@ const FormElements = () => {
       }
       setSubmitting(false);
 
-      console.log("dữ liệu gửi form đi create product: ", data);
-
       const resultAction = await dispatch(createProductAction(data));
       if (createProductAction.fulfilled.match(resultAction)) {
         // alert('Đã thêm sản phẩm thành công');
@@ -217,25 +215,44 @@ const FormElements = () => {
                     console.log("dữ liệu form gửi đi: ", data);
                     const result = await dispatch(updateProductAction(data));
                     if (updateProductAction.fulfilled.match(result)) {
-                      alert("Đã sửa thành công");
+                      swal({
+                        title: "Đã sửa thành công",
+                        // text: "You clicked the button!",
+                        icon: "success",
+                      });
 
                     } else {
-                      alert("Lỗi rồi mày");
+                      swal({
+                        title: "Có lỗi xảy ra",
+                        // text: "You clicked the button!",
+                        icon: "error",
+                      });
                     }
                   } else {
-                    console.log("dữ liệu gửi form đi create product: ", data);
                     const resultAction = await dispatch(createProductAction(data));
                     if (createProductAction.fulfilled.match(resultAction)) {
-                      alert('Đã thêm sản phẩm thành công');
+                      swal({
+                        title: "Đã thêm thành công",
+                        // text: "You clicked the button!",
+                        icon: "success",
+                      });
                       resetForm();
                       setResetTrigger(resetTrigger + 1);
                       setSelectedFiles(Array(4).fill(''));
                     } else {
                       if (resultAction.payload) {
                         const payload = resultAction.payload as { error: string };
-                        alert(`Có lỗi xảy ra: ${payload.error}`);
+                        swal({
+                          title: "Có lỗi xảy ra",
+                          // text: "You clicked the button!",
+                          icon: "error",
+                        });
                       } else {
-                        alert('Có lỗi xảy ra');
+                        swal({
+                          title: "Có lỗi xảy ra",
+                          // text: "You clicked the button!",
+                          icon: "error",
+                        });
                       }
                     }
                   }
@@ -252,7 +269,7 @@ const FormElements = () => {
                               Tên sản phẩm
                             </label>
                             <Field
-                              className="w-full rounded border border-stroke py-2 px-3.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                              className="w-full rounded border border-[#b8bdc9] py-2 px-3.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                               style={{ backgroundColor: 'transparent' }}
                               type="text"
                               name={product ? "name" : "product.name"}
@@ -269,7 +286,7 @@ const FormElements = () => {
                               </label>
                               <div className="relative">
                                 <Field
-                                  className="w-full rounded border border-stroke py-2 pl-3.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                                  className="w-full rounded border border-[#b8bdc9] py-2 pl-3.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                                   type="number"
                                   name={product ? "price" : "product.price"}
                                   id={product ? "price" : "product.price"}
@@ -284,7 +301,7 @@ const FormElements = () => {
                                 Giá sale
                               </label>
                               <Field
-                                className="w-full rounded border border-stroke py-2 px-3.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                                className="w-full rounded border border-[#b8bdc9] py-2 px-3.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                                 type="number"
                                 name={product ? "salePrice" : "product.salePrice"}
                                 id={product ? "salePrice" : "product.salePrice"}
@@ -301,8 +318,8 @@ const FormElements = () => {
                               {showInput &&
                                 <div className='flex w-[40%] ml-5'>
                                   <input className='w-full p-2 border rounded border-stroke focus:border-primary focus-visible:outline-none' type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder='Nhập tên' />
-                                  <button className='flex bg-primary text-white rounded-md w-25 ml-3 justify-center items-center' onClick={handleAddCategory}>
-                                    <p className='p-1'>Xác nhận</p>
+                                  <button className='flex bg-primary text-white rounded-md w-[40%] ml-3 justify-center items-center hover:opacity-90' onClick={handleAddCategory}>
+                                    <p className='py-1'>Xác nhận</p>
                                   </button>
                                 </div>
                               }
@@ -317,7 +334,7 @@ const FormElements = () => {
                             <div className="relative">
                               <Field as='textarea'
                                 style={{ backgroundColor: 'transparent' }}
-                                className="w-full rounded border border-stroke bg-gray py-3 pl-3.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                                className="w-full rounded border border-[#b8bdc9] bg-gray py-3 pl-3.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                                 name={product ? "description" : "product.description"}
                                 id={product ? "description" : "product.description"}
                                 rows={4}
@@ -325,20 +342,20 @@ const FormElements = () => {
                               />
                             </div>
                           </div>
-                          <div className="grid grid-cols-2">
-                            <div>
+                          <div className="grid grid-cols-2 max-md:grid-cols-1">
+                            <div className='pr-2'>
                               <label className="mb-3 block font-medium text-black dark:text-white">
                                 Size
                               </label>
-                              <div className='border border-stroke p-2'>
+                              <div className='p-2 border border-stroke'>
                                 <SizeOptions onSizeChange={(newSize) => setFieldValue('sizeOptions', newSize)} resetTrigger={resetTrigger} product={product} />
                               </div>
                             </div>
-                            <div>
+                            <div className='pl-2'>
                               <label className="mb-3 block font-medium text-black dark:text-white">
                                 Topping
                               </label>
-                              <div className='border border-stroke p-2'>
+                              <div className='p-2 border border-stroke'>
                                 <ToppingOptions onToppingChange={(newTopping) => setFieldValue('toppingOptions', newTopping)} resetTrigger={resetTrigger} product={product} />
                               </div>
                             </div>
@@ -354,7 +371,7 @@ const FormElements = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                    <div className="rounded-sm border border-[#b8bdc9] bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                       <div className="p-2">
                         <div className="grid grid-cols-4 gap-1">
                           {selectedFiles.filter(Boolean).map((file: { imageUrl: string }, i: number) => (<div>
@@ -378,7 +395,7 @@ const FormElements = () => {
                               />
 
                               <img src={file.imageUrl} alt={`preview ${i}`} className="h-full w-full object-cover" style={{ maxWidth: '260px', maxHeight: '260px' }} />
-                              <div className='flex z-50 justify-start items-start -translate-y-36 translate-x-3 hover:text-danger'>
+                              <div className='absolute top-1 right-1 flex z-50 hover:text-danger'>
                                 <svg
                                   className="fill-current"
                                   role="button"
@@ -424,7 +441,7 @@ const FormElements = () => {
                               />
                               <label htmlFor="image-input">
                                 <div className="flex flex-col items-center justify-center space-y-3">
-                                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
+                                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#b8bdc9] bg-white dark:border-strokedark dark:bg-boxdark">
                                     <svg
                                       width="16"
                                       height="16"
@@ -473,12 +490,12 @@ const FormElements = () => {
                       >
                         {product ? "Cập Nhật" : "Lưu"}
                       </button>
-                      {product && <button
-                        className="flex justify-center rounded bg-red-600 border border-stroke py-2 px-6 font-medium text-white hover:bg-opacity-80 dark:border-strokedark dark:text-white"
+                      {/* {product && <button
+                        className="flex justify-center rounded bg-red-600 border border-[#b8bdc9] py-2 px-6 font-medium text-white hover:bg-opacity-80 dark:border-strokedark dark:text-white"
                         type="button"
                       >
                         Xóa
-                      </button>}
+                      </button>} */}
                     </div>
                   </Form>)}
                 </Formik>

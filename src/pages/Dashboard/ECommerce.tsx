@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
 import ChartTwo from '../../components/Charts/ChartTwo';
 import DefaultLayout from '../../layout/DefaultLayout';
 import ChartThree from '../../components/Charts/ChartThree';
 import MapOne from '../../components/Maps/MapOne';
-import TableOne from '../../components/Tables/TableOne';
-import ChatCard from '../../components/Chat/ChatCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../Redux/store';
+import { dashBoardAction } from '../../Redux/Admin/admin.action';
+import displayMoney from '../../utils/displayMoney';
 
 const ECommerce: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const dashboard = useSelector((state: RootState) => state.admin.dashboard);
+
+  useEffect(() => {
+    dispatch(dashBoardAction());
+  },[dispatch]);
   return (
     <DefaultLayout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Lượt truy cập" total="$3.456K" rate="0.43%" levelUp>
+        <CardDataStats title="Lượt truy cập" total="3110" rate="0.43%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -31,7 +39,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Đơn hàng" total="$45,2K" rate="4.35%" levelUp>
+        <CardDataStats title="Đơn hàng" total={dashboard?.totalOrder} rate="4.35%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -54,7 +62,8 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Doanh thu" total="2.450" rate="2.59%" levelUp>
+        <CardDataStats title="Doanh thu" total={displayMoney(dashboard?.revenue || 0)} rate="2.59%" levelUp>
+
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -73,7 +82,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Tổng khách hàng" total="3.456" rate="0.95%" levelDown>
+        <CardDataStats title="Khách hàng" total={dashboard?.totalUser} rate="0.95%" levelDown>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
