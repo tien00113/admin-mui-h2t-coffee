@@ -1,21 +1,8 @@
-// import axios from "axios";
-
-// export const API_BASE_URL = "http://localhost:5454";
-
-// export const api = axios.create({
-//   baseURL: API_BASE_URL,
-// });
-
-// api.interceptors.request.use((config) => {
-//   const jwtToken = localStorage.getItem("jwt");
-//   config.headers.Authorization = `Bearer ${jwtToken}`;
-//   return config;
-// });
 import axios from "axios";
 
 export const API_BASE_URL = "http://localhost:5454";
 
-const jwtToken = localStorage.getItem("jwt");
+
 
 // const port = window.location.port;
 
@@ -24,11 +11,12 @@ export const api = axios.create({
   // Đặt Content-Type thành application/json
   headers: {
     'Content-Type': 'application/json',
-    "Authorization": `Bearer ${jwtToken}`
+    // "Authorization": `Bearer ${jwtToken}`
   }
 });
 
 api.interceptors.request.use((config) => {
+  const jwtToken = localStorage.getItem("jwt");
   // Kiểm tra xem jwtToken có tồn tại không
   if (jwtToken) {
     config.headers.Authorization = `Bearer ${jwtToken}`;

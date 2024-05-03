@@ -15,7 +15,10 @@ const ECommerce: React.FC = () => {
   const dashboard = useSelector((state: RootState) => state.admin.dashboard);
 
   useEffect(() => {
-    dispatch(dashBoardAction());
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      dispatch(dashBoardAction());
+    }
   },[dispatch]);
   return (
     <DefaultLayout>

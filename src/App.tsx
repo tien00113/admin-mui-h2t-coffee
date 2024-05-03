@@ -10,21 +10,20 @@ import Authentication from './pages/Authentication/Authentication';
 
 function App() {
   const admin = useSelector((state: RootState) => state.admin.auth);
+  const status = useSelector((state: RootState) => state.admin.status);
   const dispatch: AppDispatch = useDispatch();
-  const jwt: string | null = localStorage.getItem("jwt");
   const [prevJwt, setPrevJwt] = useState<string | null>(null);
-
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
 
-  console.log("admin----------",admin);
-
   useEffect(() => {
-    if (jwt && jwt !== prevJwt) {
+    const jwt: any = localStorage.getItem("jwt");
+    if (jwt) {
       dispatch(getProfileAction(jwt));
-      setPrevJwt(jwt);
     }
-  }, [jwt, prevJwt, dispatch]);
+    setPrevJwt(jwt);
+
+  }, [dispatch, prevJwt, status]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -34,10 +33,12 @@ function App() {
     setTimeout(() => setLoading(false), 800);
   }, []);
 
+  console.log("admn là :", prevJwt)
+
   return loading ? (<Loader />) : (
     <>
       <Routes>
-        <Route path='/*' element={jwt&&admin ? <HomePage /> : <Authentication />} />
+        <Route path='/*' element={admin ? <HomePage /> : <Authentication />} />
       </Routes>
     </>
   );

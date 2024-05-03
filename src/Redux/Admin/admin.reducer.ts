@@ -5,10 +5,11 @@ interface AuthState {
   jwt: string | null;
   error: string | null;
   loading: boolean;
-  auth: any,
-  dashboard: any,
-  stats: any,
-  customer: [],
+  auth: any;
+  status: boolean;
+  dashboard: any;
+  stats: any;
+  customer: [];
 }
 
 const initialState: AuthState = {
@@ -16,6 +17,7 @@ const initialState: AuthState = {
   error: null,
   loading: false,
   auth: null,
+  status: false,
   dashboard: null,
   stats: null,
   customer: [],
@@ -29,15 +31,18 @@ const authSlice = createSlice({
     builder.addCase(loginAction.pending, (state) => {
       state.loading = true;
       state.error = null;
+      state.status = false;
     });
     builder.addCase(loginAction.fulfilled, (state, action: PayloadAction<{ jwt: string }>) => {
       state.jwt = action.payload.jwt;
       state.loading = false;
       state.error = null;
+      state.status = true;
     });
     builder.addCase(loginAction.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message || null;
+      state.status = false;
     });
     ///////////////getProfile/////////////////////////
     //////////////////////////////////////////////////
@@ -63,6 +68,7 @@ const authSlice = createSlice({
       state.auth = null;
       state.loading = false;
       state.error = null;
+      state.status = false;
     });
     builder.addCase(logoutAction.rejected, (state, action) => {
       state.error = action.error.message || null;

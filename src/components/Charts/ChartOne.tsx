@@ -156,7 +156,10 @@ const ChartOne: React.FC = () => {
   const [option, setOption] = useState(options);
 
   useEffect(() => {
-    dispatch(getStatsLastDayAction(days));
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      dispatch(getStatsLastDayAction(days));
+    }
     if (stats) {
       setDates(stats.dates);
     }
@@ -222,7 +225,7 @@ const ChartOne: React.FC = () => {
     return `${day}/${month}/${year}`;
   };
 
-  console.log(dates);
+  console.log(stats);
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
       <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
