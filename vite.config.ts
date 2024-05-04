@@ -8,14 +8,8 @@ export default defineConfig({
     port:5000
   },
   define: {
-    'process.env': process.env,
-    global: {},
+    'process' : 'window.process',
+    'global': 'window',
+    _global: {},
   },
-  // optimizeDeps: {
-  //   include: [
-  //     '@emotion/react',
-  //     '@emotion/styled',
-  //     '@mui/material/Tooltip'
-  //   ],
-  // },
 })
