@@ -70,7 +70,7 @@ const HomePage = () => {
           path="/khach-hang"
           element={
             <>
-              <PageTitle title="Form Layout | H2T - Coffee" />
+              <PageTitle title="Khách hàng| H2T - Coffee" />
               <Customer />
             </>
           }
@@ -88,7 +88,7 @@ const HomePage = () => {
           path="/san-pham"
           element={
             <>
-              <PageTitle title="Tables | H2T - Coffee" />
+              <PageTitle title="Sản phẩm | H2T - Coffee" />
               <Tables />
             </>
           }

@@ -2,11 +2,40 @@ import DropdownMessage from './DropdownMessage';
 import DropdownNotification from './DropdownNotification';
 import DropdownUser from './DropdownUser';
 import DarkModeSwitcher from './DarkModeSwitcher';
+import { useEffect } from 'react';
+import { AppDispatch, RootState } from '../../Redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import useWebSocket from '../../hooks/useWebSocket';
+import { notificationsAction, websocketUpdateNotifications } from '../../Redux/Notifications/notifications.action';
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
+
+  const stompClient = useWebSocket("http://localhost:5454/ws");
+  const notifications = useSelector((state: RootState) => state.notifications.message);
+  const isRead = useSelector((state: RootState) => state.notifications.isRead);
+  const dispatch: AppDispatch = useDispatch();
+
+  
+  useEffect(() => {
+    if (stompClient) {
+      const subscription = stompClient.subscribe('/topic/notifications',
+        onNotificationReceive)
+      return () => subscription.unsubscribe(); // Hủy đăng ký subscription khi component unmount
+    }
+  }, [stompClient]);
+
+  useEffect(()=>{
+    dispatch(notificationsAction());
+  },[dispatch, stompClient]);
+
+  const onNotificationReceive = (payload: any) => {
+    const ntf = JSON.parse(payload.body);
+    dispatch(websocketUpdateNotifications(ntf));
+    return ntf;
+  }
   return (
     <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
       <div className="flex flex-grow items-center justify-between px-4 py-2 shadow-2 md:px-6 2xl:px-11">
@@ -99,7 +128,7 @@ const Header = (props: {
             {/* <!-- Dark Mode Toggler --> */}
 
             {/* <!-- Notification Menu Area --> */}
-            <DropdownNotification />
+            <DropdownNotification message={notifications} isRead={isRead} />
             {/* <!-- Notification Menu Area --> */}
 
             {/* <!-- Chat Notification Area --> */}
@@ -117,3 +146,4 @@ const Header = (props: {
 };
 
 export default Header;
+  

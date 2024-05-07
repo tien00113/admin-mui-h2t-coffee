@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../Redux/store';
 import { updateOrderStatusAction } from '../Redux/Order/order.action';
 import { useState } from 'react';
+import displayMoney from '../utils/displayMoney';
 
 const OrderDetail = () => {
     const location = useLocation();
@@ -114,12 +115,12 @@ const OrderDetail = () => {
                                     </td>
                                     <td>
                                         <div className='flex justify-center items-center text-black'>
-                                            {item?.priceSale / item?.quantity}
+                                            {displayMoney(item?.priceSale / item?.quantity)}
                                         </div>
                                     </td>
                                     <td>
                                         <div className='flex justify-center items-center text-primary font-medium'>
-                                            {item?.priceSale}
+                                            {displayMoney(item?.priceSale)}
                                         </div>
                                     </td>
                                 </tr>))}
@@ -180,7 +181,7 @@ const OrderDetail = () => {
                                     Tổng Tiền Hàng:
                                 </div>
                                 <div className='flex items-end justify-end w-full text-black font-medium'>
-                                    {order?.totalSalePrice}
+                                    {displayMoney(order?.totalSalePrice)}
                                 </div>
                             </div>
                             <div className='w-full border-b flex p-2'>
@@ -196,7 +197,7 @@ const OrderDetail = () => {
                                     Tổng Thanh Toán:
                                 </div>
                                 <div className='flex items-end justify-end w-full text-red-500 font-medium'>
-                                    {order?.totalSalePrice}
+                                    {displayMoney(order?.totalSalePrice)}
                                 </div>
                             </div>
 

@@ -19,4 +19,9 @@ export const updateOrderStatusAction = createAsyncThunk(
 
         return response.data;
     }
-)
+);
+
+// order.action.ts
+export const websocketUpdateOrder = createAction('order/websocketUpdate', function prepare(order: any) {
+    return { payload: order };
+});

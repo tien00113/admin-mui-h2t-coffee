@@ -2,65 +2,33 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../Redux/store';
-import { getAllOrderAction } from '../../Redux/Order/order.action';
+import { getAllOrderAction, websocketUpdateOrder } from '../../Redux/Order/order.action';
 import { Box, Button, Checkbox, IconButton, InputBase, Menu, MenuItem, TablePagination } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
-import SockJS from 'sockjs-client';
-import { Client, Stomp } from '@stomp/stompjs';
-import Stom from 'stompjs';
 import displayMoney from '../../utils/displayMoney';
+import useWebSocket from '../../hooks/useWebSocket';
 
 const TableThree = () => {
   const order = useSelector((state: RootState) => state.order.orders);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
+  const stompClient = useWebSocket("http://localhost:5454/ws");
 
-  // useEffect(() => {
-  //   const socket =new WebSocket('ws://localhost:5454/ws');
-  //   // const client = Stomp.client(socket);
-  //   const stompClient = Stomp.over(socket);
-
-  //   stompClient.connect({}, () => {
-  //     stompClient.subscribe('/topic/orders', (message) => {
-  //       console.log('Received message:', message.body);
-  //     });
-  //   });
-
-  //   return () => {
-  //     stompClient.disconnect();
-  //   };
-  // }, []);
-  const [stompClient, setStompClient] = useState<any>(null); // Sử dụng kiểu any tạm thời
 
   useEffect(() => {
-    const sock = new SockJS("http://localhost:5454/ws");
-    const stomp = Stom.over(sock);
-  
-    stomp.connect({}, () => {
-      console.log("websocket connected--------")
-      setStompClient(stomp); // Lưu trữ stomp client vào state
-    }, (error: any) => {
-      console.log("erorr------------", error);
-    });
-  
-  }, []);
+    if (stompClient) {
+      const subscription = stompClient.subscribe('/topic/orders',
+        onOrderReceive)
+      return () => subscription.unsubscribe(); // Hủy đăng ký subscription khi component unmount
+    }
+  }, [stompClient]); // Chỉ chạy lại effect khi giá trị của stompClient thay đổi
 
+  const onOrderReceive = (payload: any) => {
+    const receivedMessage = JSON.parse(payload.body);
 
-useEffect(() => {
-  if (stompClient) {
-    const subscription = stompClient.subscribe('/topic/orders',
-      onOrderReceive) 
-    return () => subscription.unsubscribe(); // Hủy đăng ký subscription khi component unmount
+    dispatch(websocketUpdateOrder(receivedMessage));
+    return receivedMessage;
   }
-}, [stompClient]); // Chỉ chạy lại effect khi giá trị của stompClient thay đổi
-
-const onOrderReceive = (payload: any) => {
-  const receivedMessage = JSON.parse(payload.body);
-  console.log("message receive from websocket ", receivedMessage);
-
-  // setMessages([...mess, receivedMessage])
-  return receivedMessage;
-}
 
 
 

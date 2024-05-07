@@ -33,8 +33,6 @@ function App() {
     setTimeout(() => setLoading(false), 800);
   }, []);
 
-  console.log("admn là :", prevJwt)
-
   return loading ? (<Loader />) : (
     <>
       <Routes>
