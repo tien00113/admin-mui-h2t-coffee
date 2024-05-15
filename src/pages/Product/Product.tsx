@@ -2,7 +2,7 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import TableTwo from '../../components/Tables/TableTwo';
 import DefaultLayout from '../../layout/DefaultLayout';
 
-const Tables = () => {
+const Product = () => {
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Tất Cả Sản Phẩm" />
@@ -15,4 +15,4 @@ const Tables = () => {
   );
 };
 
-export default Tables;
+export default Product;

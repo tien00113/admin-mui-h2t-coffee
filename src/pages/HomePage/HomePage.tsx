@@ -5,7 +5,6 @@ import Order from '../Order'
 import Profile from '../Profile'
 import FormElements from '../Form/FormElements'
 import FormLayout from '../Form/FormLayout'
-import Tables from '../Product/Product'
 import Settings from '../Settings'
 import Chart from '../Chart'
 import Alerts from '../UiElements/Alerts'
@@ -14,6 +13,7 @@ import AddProduct from '../Product/AddProduct'
 import OrderDetail from '../OrderDetail'
 import EnhancedTable from '../../components/Tables/EnhancedTable'
 import Customer from '../Customer'
+import Product from '../Product/Product'
 
 
 const HomePage = () => {
@@ -57,7 +57,7 @@ const HomePage = () => {
             </>
           }
         />
-        <Route
+        {/* <Route
           path="/forms/form-elements"
           element={
             <>
@@ -65,7 +65,7 @@ const HomePage = () => {
               <FormElements />
             </>
           }
-        />
+        /> */}
         <Route
           path="/khach-hang"
           element={
@@ -75,7 +75,7 @@ const HomePage = () => {
             </>
           }
         />
-        <Route
+        {/* <Route
           path="/tablepage"
           element={
             <>
@@ -83,13 +83,13 @@ const HomePage = () => {
               <EnhancedTable/>
             </>
           }
-        />
+        /> */}
         <Route
           path="/san-pham"
           element={
             <>
               <PageTitle title="Sản phẩm | H2T - Coffee" />
-              <Tables />
+              <Product />
             </>
           }
         />
@@ -102,7 +102,7 @@ const HomePage = () => {
             </>
           }
         />
-        <Route
+        {/* <Route
           path="/chart"
           element={
             <>
@@ -110,8 +110,8 @@ const HomePage = () => {
               <Chart />
             </>
           }
-        />
-        <Route
+        /> */}
+        {/* <Route
           path="/ui/alerts"
           element={
             <>
@@ -128,7 +128,7 @@ const HomePage = () => {
               <Buttons />
             </>
           }
-        />
+        /> */}
         <Route
           path='/san-pham/them'
           element={
